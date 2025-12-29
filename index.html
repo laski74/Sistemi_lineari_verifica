@@ -3,609 +3,1162 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Correzione Verifica: Sistemi Lineari</title>
+    <title>Correzione Verifica - Sistemi Lineari</title>
     
+    <!-- Configurazione MathJax -->
     <script>
-    window.MathJax = {
-      tex: {
-        inlineMath: [['$', '$'], ['\\(', '\\)']],
-        displayMath: [['$$', '$$'], ['\\[', '\\]']]
-      },
-      svg: {
-        fontCache: 'global'
-      }
-    };
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$']],
+                displayMath: [['$$', '$$']],
+                processEscapes: true
+            }
+        };
     </script>
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
-    <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
-
+    <!-- Chart.js per i grafici -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
     <style>
-        :root {
-            --primary-color: #2c3e50;
-            --accent-color: #3498db;
-            --bg-color: #f4f6f8;
-            --card-bg: #ffffff;
-            --text-color: #333;
-            --border-radius: 8px;
-            --success-color: #28a745;
-            --danger-color: #dc3545;
-            --warning-color: #ffc107;
-        }
-
-        body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            line-height: 1.6;
-            color: var(--text-color);
-            background-color: var(--bg-color);
+        * {
             margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
             padding: 20px;
+            color: #333;
         }
-
+        
         .container {
-            max-width: 900px;
+            max-width: 1200px;
             margin: 0 auto;
-            background: var(--card-bg);
-            padding: 30px;
-            border-radius: var(--border-radius);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
         }
-
+        
         header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
             text-align: center;
-            margin-bottom: 30px;
-            border-bottom: 2px solid var(--primary-color);
-            padding-bottom: 20px;
         }
-
-        h1 { color: var(--primary-color); margin: 0; font-size: 2.2em; }
-        h2 { color: var(--primary-color); border-left: 5px solid var(--accent-color); padding-left: 10px; margin-top: 30px;}
-
-        /* Stile dei Tab */
+        
+        header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            font-style: italic;
+            opacity: 0.9;
+        }
+        
         .tabs {
             display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #ddd;
-            background-color: #f8f9fa;
-            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            background: #f5f5f5;
+            border-bottom: 2px solid #ddd;
         }
-
+        
         .tab-button {
+            flex: 1;
+            padding: 15px 20px;
             background: none;
             border: none;
-            padding: 15px 30px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 1em;
             font-weight: 600;
-            color: #7f8c8d;
-            transition: all 0.3s ease;
+            color: #666;
+            transition: all 0.3s;
             border-bottom: 3px solid transparent;
         }
-
+        
         .tab-button:hover {
-            color: var(--accent-color);
-            background-color: rgba(52, 152, 219, 0.1);
+            background: #e8e8e8;
         }
-
+        
         .tab-button.active {
-            color: var(--accent-color);
-            border-bottom: 3px solid var(--accent-color);
+            color: #667eea;
+            background: white;
+            border-bottom-color: #667eea;
         }
-
+        
         .tab-content {
             display: none;
+            padding: 30px;
             animation: fadeIn 0.5s;
         }
-        .tab-content.active { display: block; }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* Stile Esercizi */
-        .exercise {
-            margin-bottom: 25px;
-            border: 1px solid #e0e0e0;
-            border-radius: var(--border-radius);
-            background-color: #fff;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        
+        .tab-content.active {
+            display: block;
         }
-
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .exercise {
+            margin-bottom: 30px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
         .exercise-header {
-            background-color: #f8f9fa;
-            padding: 15px;
-            font-weight: bold;
-            color: var(--primary-color);
-            border-bottom: 1px solid #e0e0e0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            transition: all 0.3s;
         }
-
-        .exercise-body { padding: 20px; }
-        .sub-question { margin-bottom: 15px; border-bottom: 1px dashed #eee; padding-bottom: 10px; }
-        .sub-question:last-child { border-bottom: none; }
-
-        /* Soluzioni a scomparsa */
-        details {
-            margin-top: 10px;
-            background-color: #fff;
-            border: 1px solid #b3d7ff;
-            border-radius: 4px;
+        
+        .exercise-header:hover {
+            background: linear-gradient(135deg, #5568d3 0%, #6a3f8f 100%);
         }
-
-        summary {
-            padding: 10px 15px;
-            cursor: pointer;
-            background-color: #e7f1ff;
-            color: #0056b3;
-            font-weight: bold;
-            list-style: none;
-            display: flex;
-            align-items: center;
-            outline: none;
+        
+        .exercise-header h3 {
+            margin: 0;
+            font-size: 1.2em;
         }
-
-        summary::-webkit-details-marker { display: none; }
-
-        summary::after {
-            content: 'Mostra Soluzione +';
-            margin-left: auto;
-            font-size: 0.9em;
+        
+        .toggle-icon {
+            font-size: 1.5em;
+            transition: transform 0.3s;
         }
-
-        details[open] summary::after { content: 'Nascondi -'; }
-
-        .solution-content {
+        
+        .toggle-icon.open {
+            transform: rotate(180deg);
+        }
+        
+        .exercise-question {
+            background: #f9f9f9;
+            padding: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .exercise-solution {
+            padding: 20px;
+            background: white;
+            display: none;
+        }
+        
+        .exercise-solution.show {
+            display: block;
+            animation: slideDown 0.3s;
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; max-height: 0; }
+            to { opacity: 1; max-height: 2000px; }
+        }
+        
+        .step {
+            margin: 15px 0;
             padding: 15px;
-            border-top: 1px solid #b3d7ff;
-            background-color: #fcfdff;
+            background: #f0f4ff;
+            border-left: 4px solid #667eea;
+            border-radius: 5px;
         }
-
+        
+        .step-title {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
         .final-answer {
-            background-color: #d4edda;
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            font-weight: bold;
             color: #155724;
-            padding: 10px;
-            border-radius: 4px;
-            margin-top: 15px;
-            font-weight: bold;
-            border: 1px solid #c3e6cb;
-            text-align: center;
         }
-
-        /* Badge per Determinato/Indeterminato/Impossibile */
-        .badge {
-            display: inline-block;
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 0.8em;
-            font-weight: bold;
-            color: white;
-            text-transform: uppercase;
-        }
-        .badge-det { background-color: var(--success-color); }
-        .badge-imp { background-color: var(--danger-color); }
-        .badge-ind { background-color: var(--warning-color); color: #333; }
-
-        /* Grafico */
-        .graph-container {
+        
+        .summary-table {
             width: 100%;
-            height: 400px;
-            border: 1px solid #ddd;
-            margin-top: 15px;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-
-        /* Tabella Riepilogo */
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
-        th { background-color: var(--primary-color); color: white; }
-        tr:nth-child(even) { background-color: #f2f2f2; }
-
+        
+        .summary-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .summary-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .summary-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        
+        .summary-table tr:hover {
+            background: #f0f4ff;
+        }
+        
+        .chart-container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        canvas {
+            max-width: 100%;
+        }
+        
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 5px;
+            color: #856404;
+        }
+        
+        .info {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 5px;
+            color: #0c5460;
+        }
     </style>
 </head>
 <body>
-
-<div class="container">
-    <header>
-        <h1>Correzione Verifica</h1>
-        <p>Sistemi Lineari: Metodi risolutivi, Grafici e Interpretazione</p>
-    </header>
-
-    <div class="tabs">
-        <button class="tab-button active" onclick="openTab('filaA')">Fila A</button>
-        <button class="tab-button" onclick="openTab('filaB')">Fila B</button>
-        <button class="tab-button" onclick="openTab('riepilogo')">Tabella Riassuntiva</button>
-    </div>
-
-    <div id="filaA" class="tab-content active">
-        <h2>Soluzioni Fila A</h2>
-
-        <div class="exercise">
-            <div class="exercise-header">1. Natura del sistema (senza calcoli)</div>
-            <div class="exercise-body">
-                <p class="instruction">Analisi dei coefficienti $a/a'$ e $b/b'$.</p>
-                
-                <div class="sub-question">
-                    <strong>a.</strong> $\begin{cases}11x+7y=5\\ x+7y=5\end{cases}$
-                    <details>
-                        <summary>Analisi</summary>
-                        <div class="solution-content">
-                            <p>Rapporti: $\frac{11}{1} \neq \frac{7}{7}$. Le rette hanno pendenza diversa.</p>
-                            <div class="final-answer"><span class="badge badge-det">DETERMINATO</span></div>
-                        </div>
-                    </details>
-                </div>
-
-                <div class="sub-question">
-                    <strong>b.</strong> $\begin{cases}11x+7y=5\\ 22x+14y=5\end{cases}$
-                    <details>
-                        <summary>Analisi</summary>
-                        <div class="solution-content">
-                            <p>Rapporti: $\frac{11}{22} = \frac{1}{2}$ e $\frac{7}{14} = \frac{1}{2}$. Termini noti: $\frac{5}{5}=1$.</p>
-                            <p>I coefficienti sono proporzionali ma i termini noti no ($1/2 \neq 1$). Rette parallele.</p>
-                            <div class="final-answer"><span class="badge badge-imp">IMPOSSIBILE</span></div>
-                        </div>
-                    </details>
-                </div>
-
-                <div class="sub-question">
-                    <strong>c.</strong> $\begin{cases}x+7y=5\\ x-7y=5\end{cases}$
-                    <details>
-                        <summary>Analisi</summary>
-                        <div class="solution-content">
-                            <p>Rapporti: $\frac{1}{1} = 1$ e $\frac{7}{-7} = -1$. Sono diversi.</p>
-                            <div class="final-answer"><span class="badge badge-det">DETERMINATO</span></div>
-                        </div>
-                    </details>
-                </div>
-
-                <div class="sub-question">
-                    <strong>d.</strong> $\begin{cases}11x+7y=5\\ 11x+7y=3\end{cases}$
-                    <details>
-                        <summary>Analisi</summary>
-                        <div class="solution-content">
-                            <p>Stessa parte letterale, termine noto diverso ($5 \neq 3$).</p>
-                            <div class="final-answer"><span class="badge badge-imp">IMPOSSIBILE</span></div>
-                        </div>
-                    </details>
-                </div>
-
-                <div class="sub-question">
-                    <strong>e.</strong> $\begin{cases}11x+7y=5\\ 22x+14y-10=0\end{cases}$
-                    <details>
-                        <summary>Analisi</summary>
-                        <div class="solution-content">
-                            <p>Portiamo in forma normale la seconda: $22x+14y=10$.</p>
-                            <p>Dividendo per 2 otteniamo $11x+7y=5$, che è identica alla prima.</p>
-                            <div class="final-answer"><span class="badge badge-ind">INDETERMINATO</span></div>
-                        </div>
-                    </details>
-                </div>
-
-                <div class="sub-question">
-                    <strong>f.</strong> $\begin{cases}\frac{11}{2}x+\frac{7}{4}y=5\\ 22x+7y=5\end{cases}$
-                    <details>
-                        <summary>Analisi</summary>
-                        <div class="solution-content">
-                            <p>Moltiplichiamo la prima per 4: $22x+7y=20$.</p>
-                            <p>Il sistema diventa $\begin{cases}22x+7y=20\\ 22x+7y=5\end{cases}$. Impossibile ($20 \neq 5$).</p>
-                            <div class="final-answer"><span class="badge badge-imp">IMPOSSIBILE</span></div>
-                        </div>
-                    </details>
-                </div>
-            </div>
+    <div class="container">
+        <header>
+            <h1>📐 Correzione Verifica: Sistemi Lineari</h1>
+            <p>"Non smettere di domandarti. La curiosità ha la sua ragione d'esistere." - Albert Einstein</p>
+        </header>
+        
+        <div class="tabs">
+            <button class="tab-button active" onclick="openTab(event, 'filaA')">Fila A (*)</button>
+            <button class="tab-button" onclick="openTab(event, 'filaB')">Fila B (**)</button>
+            <button class="tab-button" onclick="openTab(event, 'summary')">Tabella Riassuntiva</button>
         </div>
-
-        <div class="exercise">
-            <div class="exercise-header">2. Metodo di Cramer e Grafico</div>
-            <div class="exercise-body">
-                <p>Sistema: $\begin{cases}5x-2y=12\\ 3y+\frac{1}{2}x=-2\end{cases}$</p>
-                <details>
-                    <summary>Svolgimento Completo</summary>
-                    <div class="solution-content">
-                        <p><strong>1. Forma Normale</strong></p>
-                        <p>Riscriviamo ordinando e togliendo frazioni:</p>
-                        <p>$$ \begin{cases} 5x - 2y = 12 \\ x + 6y = -4 \end{cases} $$</p>
-
-                        <p><strong>2. Calcolo Determinanti (Cramer)</strong></p>
-                        <p>$$ D = \begin{vmatrix} 5 & -2 \\ 1 & 6 \end{vmatrix} = 30 - (-2) = 32 $$</p>
-                        <p>$$ D_x = \begin{vmatrix} 12 & -2 \\ -4 & 6 \end{vmatrix} = 72 - 8 = 64 $$</p>
-                        <p>$$ D_y = \begin{vmatrix} 5 & 12 \\ 1 & -4 \end{vmatrix} = -20 - 12 = -32 $$</p>
-                        
-                        <p><strong>3. Soluzioni</strong></p>
-                        <p>$$ x = 64/32 = 2, \quad y = -32/32 = -1 $$</p>
-
-                        <div class="final-answer">Soluzione: $(2, -1)$</div>
-                        
-                        <p style="margin-top:20px;"><strong>Interpretazione Grafica:</strong></p>
-                        <div id="graphA" class="graph-container"></div>
-                    </div>
-                </details>
-            </div>
-        </div>
-
-        <div class="exercise">
-            <div class="exercise-header">3. Metodo di Riduzione/Sostituzione</div>
-            <div class="exercise-body">
-                <p>Sistema: $\begin{cases}-\frac{1}{3}(y+1)-\frac{1}{2}x=3(x-\frac{1}{3})\\ 3(x+1)-2=4(x-2y)+17\end{cases}$</p>
-                <details>
-                    <summary>Passaggi Algebrici</summary>
-                    <div class="solution-content">
-                        <p>Semplifichiamo le equazioni:</p>
-                        <ol>
-                            <li>Eq 1: Moltiplico per 6 $\rightarrow -2(y+1) -3x = 18x - 6 \rightarrow -21x -2y = -4 \rightarrow 21x+2y=4$</li>
-                            <li>Eq 2: $3x+3-2 = 4x-8y+17 \rightarrow -x+8y=16 \rightarrow x = 8y-16$</li>
-                        </ol>
-                        <p>Sostituisco $x$ nella prima:</p>
-                        <p>$$ 21(8y-16) + 2y = 4 $$</p>
-                        <p>$$ 168y - 336 + 2y = 4 \rightarrow 170y = 340 \rightarrow y=2 $$</p>
-                        <p>Trovo x: $x = 8(2)-16 = 0$.</p>
-                        <div class="final-answer">Soluzione: $(0, 2)$</div>
-                    </div>
-                </details>
-            </div>
-        </div>
-
-        <div class="exercise">
-            <div class="exercise-header">4. Sistema Parametrico</div>
-            <div class="exercise-body">
-                <p>Discutere: $\begin{cases}ax+2y=2\\ x+y=2\end{cases}$</p>
-                <details>
-                    <summary>Discussione</summary>
-                    <div class="solution-content">
-                        <p>Determinante $D = a - 2$.</p>
+        
+        <!-- FILA A -->
+        <div id="filaA" class="tab-content active">
+            <h2>Fila A - Soluzioni</h2>
+            
+            <!-- Esercizio 1 -->
+            <div class="exercise">
+                <div class="exercise-header" onclick="toggleSolution(this)">
+                    <h3>Esercizio 1 - Classificazione dei sistemi</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="exercise-question">
+                    <p><strong>Consegna:</strong> Scrivi sotto ciascuno dei seguenti sistemi se è determinato, indeterminato o impossibile, senza risolverlo.</p>
+                </div>
+                <div class="exercise-solution">
+                    <div class="info">
+                        <strong>Metodo:</strong> Si utilizza il rapporto dei coefficienti:
                         <ul>
-                            <li><strong>Se $a \neq 2$:</strong> Sistema Determinato.<br>
-                                $D_x = 2-4 = -2 \rightarrow x = \frac{-2}{a-2}$<br>
-                                $D_y = 2a-2 \rightarrow y = \frac{2(a-1)}{a-2}$
-                            </li>
-                            <li><strong>Se $a = 2$:</strong> Sistema Impossibile (le rette diventano $2x+2y=2$ e $x+y=2$, ovvero $x+y=1$ e $x+y=2$).</li>
+                            <li>Se $\frac{a_1}{a_2} \neq \frac{b_1}{b_2}$ → sistema <strong>determinato</strong></li>
+                            <li>Se $\frac{a_1}{a_2} = \frac{b_1}{b_2} = \frac{c_1}{c_2}$ → sistema <strong>indeterminato</strong></li>
+                            <li>Se $\frac{a_1}{a_2} = \frac{b_1}{b_2} \neq \frac{c_1}{c_2}$ → sistema <strong>impossibile</strong></li>
                         </ul>
                     </div>
-                </details>
-            </div>
-        </div>
-
-        <div class="exercise">
-            <div class="exercise-header">5. Problema (Aerei)</div>
-            <div class="exercise-body">
-                <p>Problema delle velocità degli aerei.</p>
-                <details>
-                    <summary>Soluzione Problema</summary>
-                    <div class="solution-content">
-                        <p>Impostazione del sistema:</p>
-                        <p>$$ \begin{cases} v_1 + 100 = \frac{45}{46}v_2 \\ v_1 - 100 = \frac{35}{46}v_2 \end{cases} $$</p>
-                        <p>Sottraendo le equazioni: $200 = \frac{10}{46}v_2 \rightarrow v_2 = 920$.</p>
-                        <p>Sostituendo: $v_1 = 800$.</p>
-                        <div class="final-answer">Aereo 1: 800 km/h, Aereo 2: 920 km/h</div>
+                    
+                    <div class="step">
+                        <div class="step-title">a) $\begin{cases} 11x + 7y = 5 \\ x + 7y = 5 \end{cases}$</div>
+                        <p>Rapporti: $\frac{11}{1} = 11$, $\frac{7}{7} = 1$, $\frac{5}{5} = 1$</p>
+                        <p>Poiché $\frac{11}{1} \neq \frac{7}{7}$ → i coefficienti hanno rapporti diversi</p>
+                        <div class="final-answer">Risposta: DETERMINATO</div>
                     </div>
-                </details>
-            </div>
-        </div>
-    </div>
-
-    <div id="filaB" class="tab-content">
-        <h2>Soluzioni Fila B</h2>
-
-        <div class="exercise">
-            <div class="exercise-header">1. Natura del sistema</div>
-            <div class="exercise-body">
-                <div class="sub-question">
-                    <strong>a.</strong> $\begin{cases}10x-3y=5\\ 10x+3y=k\end{cases}$
-                    <details><summary>Analisi</summary>
-                    <div class="solution-content"><p>Coefficienti $y$ opposti. <span class="badge badge-det">DETERMINATO</span></p></div></details>
-                </div>
-                <div class="sub-question">
-                    <strong>b.</strong> $\begin{cases}10x-3y=5\\ 20x-6y=5\end{cases}$
-                    <details><summary>Analisi</summary>
-                    <div class="solution-content"><p>Coeff. doppi, termine noto uguale. <span class="badge badge-imp">IMPOSSIBILE</span></p></div></details>
-                </div>
-                <div class="sub-question">
-                    <strong>c.</strong> $\begin{cases}2x+6y=5\\ x+3y=5\end{cases}$
-                    <details><summary>Analisi</summary>
-                    <div class="solution-content"><p>Coeff. metà, termine noto uguale. <span class="badge badge-imp">IMPOSSIBILE</span></p></div></details>
-                </div>
-                <div class="sub-question">
-                    <strong>d.</strong> $\begin{cases}10x-3y=5\\ 20x+6y=-10\end{cases}$
-                    <details><summary>Analisi</summary>
-                    <div class="solution-content"><p>Pendenze diverse. <span class="badge badge-det">DETERMINATO</span></p></div></details>
-                </div>
-                <div class="sub-question">
-                    <strong>e.</strong> $\begin{cases}10x-3y=5\\ 20x-6y-10=0\end{cases}$
-                    <details><summary>Analisi</summary>
-                    <div class="solution-content"><p>Equazioni equivalenti. <span class="badge badge-ind">INDETERMINATO</span></p></div></details>
-                </div>
-                <div class="sub-question">
-                    <strong>f.</strong> $\begin{cases}\frac{1}{2}x+\frac{3}{4}y=2\\ 20x+30y=80\end{cases}$
-                    <details><summary>Analisi</summary>
-                    <div class="solution-content">
-                        <p>Moltiplicando la prima per 40 si ottiene la seconda. <span class="badge badge-ind">INDETERMINATO</span></p>
-                    </div></details>
-                </div>
-            </div>
-        </div>
-
-        <div class="exercise">
-            <div class="exercise-header">2. Metodo di Cramer e Grafico</div>
-            <div class="exercise-body">
-                <p>Sistema identico alla Fila A.</p>
-                <details>
-                    <summary>Soluzione</summary>
-                    <div class="solution-content">
-                        <div class="final-answer">Soluzione: $(2, -1)$</div>
-                        <div id="graphB" class="graph-container"></div>
+                    
+                    <div class="step">
+                        <div class="step-title">b) $\begin{cases} 11x + 7y = 5 \\ 22x + 14y = 5 \end{cases}$</div>
+                        <p>Rapporti: $\frac{11}{22} = \frac{1}{2}$, $\frac{7}{14} = \frac{1}{2}$, $\frac{5}{5} = 1$</p>
+                        <p>Poiché $\frac{1}{2} = \frac{1}{2} \neq 1$ → i coefficienti delle variabili sono proporzionali ma non i termini noti</p>
+                        <div class="final-answer">Risposta: IMPOSSIBILE</div>
                     </div>
-                </details>
-            </div>
-        </div>
-
-        <div class="exercise">
-            <div class="exercise-header">3. Metodo di Sostituzione</div>
-            <div class="exercise-body">
-                <p>Sistema identico alla Fila A.</p>
-                <details>
-                    <summary>Soluzione</summary>
-                    <div class="solution-content">
-                        <div class="final-answer">Soluzione: $(0, 2)$</div>
+                    
+                    <div class="step">
+                        <div class="step-title">c) $\begin{cases} x + 7y = 5 \\ x - 7y = 5 \end{cases}$</div>
+                        <p>Rapporti: $\frac{1}{1} = 1$, $\frac{7}{-7} = -1$, $\frac{5}{5} = 1$</p>
+                        <p>Poiché $1 \neq -1$ → i coefficienti hanno rapporti diversi</p>
+                        <div class="final-answer">Risposta: DETERMINATO</div>
                     </div>
-                </details>
+                    
+                    <div class="step">
+                        <div class="step-title">d) $\begin{cases} 11x + 7y = 5 \\ 11x + 7y = 3 \end{cases}$</div>
+                        <p>Rapporti: $\frac{11}{11} = 1$, $\frac{7}{7} = 1$, $\frac{5}{3}$</p>
+                        <p>Poiché $1 = 1 \neq \frac{5}{3}$ → i coefficienti delle variabili sono uguali ma non i termini noti</p>
+                        <div class="final-answer">Risposta: IMPOSSIBILE</div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-title">e) $\begin{cases} 11x + 7y = 5 \\ 22x + 14y - 10 = 0 \end{cases}$</div>
+                        <p>Riscriviamo la seconda: $22x + 14y = 10$</p>
+                        <p>Rapporti: $\frac{11}{22} = \frac{1}{2}$, $\frac{7}{14} = \frac{1}{2}$, $\frac{5}{10} = \frac{1}{2}$</p>
+                        <p>Poiché $\frac{1}{2} = \frac{1}{2} = \frac{1}{2}$ → tutti i rapporti sono uguali</p>
+                        <div class="final-answer">Risposta: INDETERMINATO</div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-title">f) $\begin{cases} \frac{11}{2}x + \frac{7}{4}y = 5 \\ 22x + 7y = 5 \end{cases}$</div>
+                        <p>Rapporti: $\frac{11/2}{22} = \frac{11}{44} = \frac{1}{4}$, $\frac{7/4}{7} = \frac{7}{28} = \frac{1}{4}$, $\frac{5}{5} = 1$</p>
+                        <p>Poiché $\frac{1}{4} = \frac{1}{4} \neq 1$ → i coefficienti delle variabili sono proporzionali ma non i termini noti</p>
+                        <div class="final-answer">Risposta: IMPOSSIBILE</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Esercizio 2 -->
+            <div class="exercise">
+                <div class="exercise-header" onclick="toggleSolution(this)">
+                    <h3>Esercizio 2 - Risoluzione con Cramer e grafica</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="exercise-question">
+                    <p><strong>Sistema:</strong> $\begin{cases} 5x - 2y = 12 \\ 3y + \frac{1}{2}x = -2 \end{cases}$</p>
+                    <p><strong>a)</strong> Metodo di Cramer | <strong>b)</strong> Interpretazione grafica</p>
+                </div>
+                <div class="exercise-solution">
+                    <div class="step">
+                        <div class="step-title">a) Risoluzione con il metodo di Cramer</div>
+                        
+                        <p><strong>Passo 1:</strong> Riscriviamo il sistema in forma standard</p>
+                        <p>$$\begin{cases} 5x - 2y = 12 \\ \frac{1}{2}x + 3y = -2 \end{cases}$$</p>
+                        
+                        <p><strong>Passo 2:</strong> Calcoliamo il determinante della matrice dei coefficienti</p>
+                        <p>$$D = \begin{vmatrix} 5 & -2 \\ \frac{1}{2} & 3 \end{vmatrix} = 5 \cdot 3 - (-2) \cdot \frac{1}{2} = 15 + 1 = 16$$</p>
+                        
+                        <p><strong>Passo 3:</strong> Calcoliamo $D_x$ (sostituiamo i termini noti nella prima colonna)</p>
+                        <p>$$D_x = \begin{vmatrix} 12 & -2 \\ -2 & 3 \end{vmatrix} = 12 \cdot 3 - (-2) \cdot (-2) = 36 - 4 = 32$$</p>
+                        
+                        <p><strong>Passo 4:</strong> Calcoliamo $D_y$ (sostituiamo i termini noti nella seconda colonna)</p>
+                        <p>$$D_y = \begin{vmatrix} 5 & 12 \\ \frac{1}{2} & -2 \end{vmatrix} = 5 \cdot (-2) - 12 \cdot \frac{1}{2} = -10 - 6 = -16$$</p>
+                        
+                        <p><strong>Passo 5:</strong> Calcoliamo le soluzioni</p>
+                        <p>$$x = \frac{D_x}{D} = \frac{32}{16} = 2$$</p>
+                        <p>$$y = \frac{D_y}{D} = \frac{-16}{16} = -1$$</p>
+                        
+                        <div class="final-answer">Soluzione: $x = 2$, $y = -1$</div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-title">b) Interpretazione grafica</div>
+                        
+                        <p><strong>Passo 1:</strong> Trasformiamo le equazioni in forma esplicita $y = mx + q$</p>
+                        
+                        <p>Prima equazione: $5x - 2y = 12$</p>
+                        <p>$-2y = -5x + 12$</p>
+                        <p>$y = \frac{5}{2}x - 6$</p>
+                        
+                        <p>Seconda equazione: $\frac{1}{2}x + 3y = -2$</p>
+                        <p>$3y = -\frac{1}{2}x - 2$</p>
+                        <p>$y = -\frac{1}{6}x - \frac{2}{3}$</p>
+                        
+                        <div class="chart-container">
+                            <canvas id="chartFilaA"></canvas>
+                        </div>
+                        
+                        <div class="final-answer">
+                            Il punto di intersezione delle due rette è $(2, -1)$, che corrisponde alla soluzione del sistema.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Esercizio 3 -->
+            <div class="exercise">
+                <div class="exercise-header" onclick="toggleSolution(this)">
+                    <h3>Esercizio 3 - Metodo di riduzione o sostituzione</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="exercise-question">
+                    <p><strong>Sistema:</strong> $\begin{cases} -\frac{1}{3}(y + 1) - \frac{1}{2}x = 3(x - \frac{1}{3}) \\ 3(x + 1) - 2 = 4(x - 2y) + 17 \end{cases}$</p>
+                </div>
+                <div class="exercise-solution">
+                    <div class="step">
+                        <div class="step-title">Passo 1: Semplifichiamo la prima equazione</div>
+                        <p>$-\frac{1}{3}(y + 1) - \frac{1}{2}x = 3(x - \frac{1}{3})$</p>
+                        <p>$-\frac{1}{3}y - \frac{1}{3} - \frac{1}{2}x = 3x - 1$</p>
+                        <p>Moltiplichiamo per 6: $-2y - 2 - 3x = 18x - 6$</p>
+                        <p>$-2y - 3x = 18x - 4$</p>
+                        <p>$-2y = 21x - 4$</p>
+                        <p>$y = -\frac{21x - 4}{2}$</p>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-title">Passo 2: Semplifichiamo la seconda equazione</div>
+                        <p>$3(x + 1) - 2 = 4(x - 2y) + 17$</p>
+                        <p>$3x + 3 - 2 = 4x - 8y + 17$</p>
+                        <p>$3x + 1 = 4x - 8y + 17$</p>
+                        <p>$8y = x + 16$</p>
+                        <p>$y = \frac{x + 16}{8}$</p>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-title">Passo 3: Uguagliamo le due espressioni di y (metodo del confronto)</div>
+                        <p>$-\frac{21x - 4}{2} = \frac{x + 16}{8}$</p>
+                        <p>Moltiplichiamo per 8: $-4(21x - 4) = x + 16$</p>
+                        <p>$-84x + 16 = x + 16$</p>
+                        <p>$-85x = 0$</p>
+                        <p>$x = 0$</p>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-title">Passo 4: Sostituiamo per trovare y</div>
+                        <p>$y = \frac{0 + 16}{8} = 2$</p>
+                    </div>
+                    
+                    <div class="final-answer">Soluzione: $x = 0$, $y = 2$</div>
+                </div>
+            </div>
+            
+            <!-- Esercizio 4 -->
+            <div class="exercise">
+                <div class="exercise-header" onclick="toggleSolution(this)">
+                    <h3>Esercizio 4 - Sistema letterale</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="exercise-question">
+                    <p><strong>Sistema:</strong> $\begin{cases} ax + 2y = 2 \\ x + y = 2 \end{cases}$</p>
+                    <p>Discuti e risolvi al variare del parametro $a$.</p>
+                </div>
+                <div class="exercise-solution">
+                    <div class="step">
+                        <div class="step-title">Metodo: Utilizziamo la sostituzione</div>
+                        <p>Dalla seconda equazione: $x = 2 - y$</p>
+                        <p>Sostituiamo nella prima: $a(2 - y) + 2y = 2$</p>
+                        <p>$2a - ay + 2y = 2$</p>
+                        <p>$y(2 - a) = 2 - 2a$</p>
+                        <p>$y(2 - a) = -2(a - 1)$</p>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-title">Discussione:</div>
+                        
+                        <p><strong>Caso 1: $a \neq 2$</strong></p>
+                        <p>Il sistema è determinato:</p>
+                        <p>$y = \frac{-2(a - 1)}{2 - a} = \frac{2(a - 1)}{a - 2}$</p>
+                        <p>$x = 2 - y = 2 - \frac{2(a - 1)}{a - 2} = \frac{2(a - 2) - 2(a - 1)}{a - 2} = \frac{2a - 4 - 2a + 2}{a - 2} = \frac{-2}{a - 2} = \frac{2}{2 - a}$</p>
+                        
+                        <p><strong>Caso 2: $a = 2$</strong></p>
+                        <p>L'equazione diventa: $0 \cdot y = -2$, che è impossibile</p>
+                    </div>
+                    
+                    <div class="final-answer">
+                        <strong>Soluzione:</strong><br>
+                        • Se $a \neq 2$: sistema determinato con $x = \frac{2}{2-a}$ e $y = \frac{2(a-1)}{a-2}$<br>
+                        • Se $a = 2$: sistema impossibile
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Esercizio 5 -->
+            <div class="exercise">
+                <div class="exercise-header" onclick="toggleSolution(this)">
+                    <h3>Esercizio 5 - Problema degli aerei</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="exercise-question">
+                    <p>Determina la velocità di due aerei sapendo che:</p>
+                    <ul>
+                        <li>Se uno aumentasse di 100 km/h raggiungerebbe i $\frac{45}{46}$ della velocità dell'altro</li>
+                        <li>Se diminuisse di 100 km/h raggiungerebbe $\frac{35}{46}$ della velocità dell'altro</li>
+                    </ul>
+                </div>
+                <div class="exercise-solution">
+                    <div class="step">
+                        <div class="step-title">Passo 1: Impostiamo le incognite</div>
+                        <p>Sia $x$ = velocità del primo aereo (km/h)</p>
+                        <p>Sia $y$ = velocità del secondo aereo (km/h)</p>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-title">Passo 2: Traduciamo le condizioni in equazioni</div>
+                        <p>Prima condizione: $x + 100 = \frac{45}{46}y$</p>
+                        <p>Seconda condizione: $x - 100 = \frac{35}{46}y$</p>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-title">Passo 3: Sottraiamo le due equazioni (metodo di riduzione)</div>
+                        <p>$(x + 100) - (x - 100) = \frac{45}{46}y - \frac{35}{46}y$</p>
+                        <p>$200 = \frac{10}{46}y$</p>
+                        <p>$200 = \frac{5}{23}y$</p>
+                        <p>$y = 200 \cdot \frac{23}{5} = 920$ km/h</p>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-title">Passo 4: Sostituiamo per trovare x</div>
+                        <p>$x + 100 = \frac{45}{46} \cdot 920$</p>
+                        <p>$x + 100 = \frac{41400}{46} = 900$</p>
+                        <p>$x = 800$ km/h</p>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-title">Verifica:</div>
+                        <p>$800 + 100 = 900 = \frac{45}{46} \cdot 920$ ✓</p>
+                        <p>$800 - 100 = 700 = \frac{35}{46} \cdot 920$ ✓</p>
+                    </div>
+                    
+                    <div class="final-answer">
+                        Il primo aereo viaggia a 800 km/h, il secondo a 920 km/h
+                    </div>
+                </div>
             </div>
         </div>
-
-        <div class="exercise">
-            <div class="exercise-header">4. Sistema Parametrico</div>
-            <div class="exercise-body">
-                <p>Discutere: $\begin{cases}ax+2y=1\\ x+y=2\end{cases}$</p>
-                <details>
-                    <summary>Discussione</summary>
-                    <div class="solution-content">
-                        <p>Determinante $D = a - 2$.</p>
+        
+        <!-- FILA B -->
+        <div id="filaB" class="tab-content">
+            <h2>Fila B - Soluzioni</h2>
+            
+            <!-- Esercizio 1 -->
+            <div class="exercise">
+                <div class="exercise-header" onclick="toggleSolution(this)">
+                    <h3>Esercizio 1 - Classificazione dei sistemi</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="exercise-question">
+                    <p><strong>Consegna:</strong> Scrivi sotto ciascuno dei seguenti sistemi se è determinato, indeterminato o impossibile, senza risolverlo.</p>
+                </div>
+                <div class="exercise-solution">
+                    <div class="info">
+                        <strong>Metodo:</strong> Si utilizza il rapporto dei coefficienti:
                         <ul>
-                            <li><strong>Se $a \neq 2$:</strong> Determinato.<br>Soluzione: $x=\frac{-3}{a-2}$, $y=\frac{2a-1}{a-2}$.</li>
-                            <li><strong>Se $a = 2$:</strong> Impossibile.</li>
+                            <li>Se $\frac{a_1}{a_2} \neq \frac{b_1}{b_2}$ → sistema <strong>determinato</strong></li>
+                            <li>Se $\frac{a_1}{a_2} = \frac{b_1}{b_2} = \frac{c_1}{c_2}$ → sistema <strong>indeterminato</strong></li>
+                            <li>Se $\frac{a_1}{a_2} = \frac{b_1}{b_2} \neq \frac{c_1}{c_2}$ → sistema <strong>impossibile</strong></li>
                         </ul>
                     </div>
-                </details>
-            </div>
-        </div>
-
-        <div class="exercise">
-            <div class="exercise-header">5. Problema (Pesi)</div>
-            <div class="exercise-body">
-                <p>Problema di Chiara e Barbara.</p>
-                <details>
-                    <summary>Soluzione Problema</summary>
-                    <div class="solution-content">
-                        <p>Impostazione:</p>
-                        <p>$$ \begin{cases} c = \frac{6}{7}b \\ b - 10 = c - 1 \end{cases} $$</p>
-                        <p>Risolvendo per sostituzione:</p>
-                        <p>$$ b - 10 = \frac{6}{7}b - 1 \rightarrow \frac{1}{7}b = 9 \rightarrow b = 63 $$</p>
-                        <p>$$ c = 54 $$</p>
-                        <div class="final-answer">Chiara: 54 kg, Barbara: 63 kg</div>
+                    
+                    <div class="step">
+                        <div class="step-title">a) $\begin{cases} 10x - 3y = 5 \\ 10x + 3y = -5 \end{cases}$</div>
+                        <p>Rapporti: $\frac{10}{10} = 1$, $\frac{-3}{3} = -1$, $\frac{5}{-5} = -1$</p>
+                        <p>Poiché $1 \neq -1$ → i coefficienti hanno rapporti diversi</p>
+                        <div class="final-answer">Risposta: DETERMINATO</div>
                     </div>
-                </details>
+                    
+                    <div class="step">
+                        <div class="step-title">b) $\begin{cases} 10x - 3y = 5 \\ 20x - 6y = 5 \end{cases}$</div>
+                        <p>Rapporti: $\frac{10}{20} = \frac{1}{2}$, $\frac{-3}{-6} = \frac{1}{2}$, $\frac{5}{5} = 1$</p>
+                        <p>Poiché $\frac{1}{2} = \frac{1}{2} \neq 1$ → i coefficienti delle variabili sono proporzionali ma non i termini noti</p>
+                        <div class="final-answer">Risposta: IMPOSSIBILE</div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-title">c) $\begin{cases} 2x + 6y = 5 \\ x + 3y = 5 \end{cases}$</div>
+                        <p>Rapporti: $\frac{2}{1} = 2$, $\frac{6}{3} = 2$, $\frac{5}{5} = 1$</p>
+                        <p>Poiché $2 = 2 \neq 1$ → i coefficienti delle variabili sono proporzionali ma non i termini noti</p>
+                        <div class="final-answer">Risposta: IMPOSSIBILE</div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-title">d) $\begin{cases} 10x - 3y = 5 \\ 20x + 6y = -10 \end{cases}$</div>
+                        <p>Rapporti: $\frac{10}{20} = \frac{1}{2}$, $\frac{-3}{6} = -\frac{1}{2}$</p>
+                        <p>Poiché $\frac{1}{2} \neq -\frac{1}{2}$ → i coefficienti hanno rapporti diversi</p>
+                        <div class="final-answer">Risposta: DETERMINATO</div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-title">e) $\begin{cases} 10x - 3y = 5 \\ 20x - 6y - 10 = 0 \end{cases}$</div>
+                        <p>Riscriviamo la seconda: $20x - 6y = 10$</p>
+                        <p>Rapporti: $\frac{10}{20} = \frac{1}{2}$, $\frac{-3}{-6} = \frac{1}{2}$, $\frac{5}{10} = \frac{1}{2}$</p>
+                        <p>Poiché $\frac{1}{2} = \frac{1}{2} = \frac{1}{2}$ → tutti i rapporti sono uguali</p>
+                        <div class="final-answer">Risposta: INDETERMINATO</div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-title">f) $\begin{cases} \frac{1}{2}x + \frac{3}{4}y = 2 \\ 20x + 30y = 80 \end{cases}$</div>
+                        <p>Moltiplichiamo la prima per 4: $2x + 3y = 8$</p>
+                        <p>Dividiamo la seconda per 10: $2x + 3y = 8$</p>
+                        <p>Le due equazioni sono identiche!</p>
+                        <div class="final-answer">Risposta: INDETERMINATO</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Esercizio 2 - identico alla Fila A -->
+            <div class="exercise">
+                <div class="exercise-header" onclick="toggleSolution(this)">
+                    <h3>Esercizio 2 - Risoluzione con Cramer e grafica</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="exercise-question">
+                    <p><strong>Sistema:</strong> $\begin{cases} 5x - 2y = 12 \\ 3y + \frac{1}{2}x = -2 \end{cases}$</p>
+                    <p><strong>a)</strong> Metodo di Cramer | <strong>b)</strong> Interpretazione grafica</p>
+                </div>
+                <div class="exercise-solution">
+                    <div class="step">
+                        <div class="step-title">a) Risoluzione con il metodo di Cramer</div>
+                        
+                        <p><strong>Passo 1:</strong> Riscriviamo il sistema in forma standard</p>
+                        <p>$$\begin{cases} 5x - 2y = 12 \\ \frac{1}{2}x + 3y = -2 \end{cases}$$</p>
+                        
+                        <p><strong>Passo 2:</strong> Calcoliamo il determinante della matrice dei coefficienti</p>
+                        <p>$$D = \begin{vmatrix} 5 & -2 \\ \frac{1}{2} & 3 \end{vmatrix} = 5 \cdot 3 - (-2) \cdot \frac{1}{2} = 15 + 1 = 16$$</p>
+                        
+                        <p><strong>Passo 3:</strong> Calcoliamo $D_x$</p>
+                        <p>$$D_x = \begin{vmatrix} 12 & -2 \\ -2 & 3 \end{vmatrix} = 12 \cdot 3 - (-2) \cdot (-2) = 36 - 4 = 32$$</p>
+                        
+                        <p><strong>Passo 4:</strong> Calcoliamo $D_y$</p>
+                        <p>$$D_y = \begin{vmatrix} 5 & 12 \\ \frac{1}{2} & -2 \end{vmatrix} = 5 \cdot (-2) - 12 \cdot \frac{1}{2} = -10 - 6 = -16$$</p>
+                        
+                        <p><strong>Passo 5:</strong> Calcoliamo le soluzioni</p>
+                        <p>$$x = \frac{D_x}{D} = \frac{32}{16} = 2$$</p>
+                        <p>$$y = \frac{D_y}{D} = \frac{-16}{16} = -1$$</p>
+                        
+                        <div class="final-answer">Soluzione: $x = 2$, $y = -1$</div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-title">b) Interpretazione grafica</div>
+                        
+                        <p>Equazioni in forma esplicita:</p>
+                        <p>$y = \frac{5}{2}x - 6$</p>
+                        <p>$y = -\frac{1}{6}x - \frac{2}{3}$</p>
+                        
+                        <div class="chart-container">
+                            <canvas id="chartFilaB"></canvas>
+                        </div>
+                        
+                        <div class="final-answer">
+                            Il punto di intersezione è $(2, -1)$
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Esercizio 3 - identico alla Fila A -->
+            <div class="exercise">
+                <div class="exercise-header" onclick="toggleSolution(this)">
+                    <h3>Esercizio 3 - Metodo del confronto o sostituzione</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="exercise-question">
+                    <p><strong>Sistema:</strong> $\begin{cases} -\frac{1}{3}(y + 1) - \frac{1}{2}x = 3(x - \frac{1}{3}) \\ 3(x + 1) - 2 = 4(x - 2y) + 17 \end{cases}$</p>
+                </div>
+                <div class="exercise-solution">
+                    <p class="info">La risoluzione è identica a quella della Fila A</p>
+                    <div class="final-answer">Soluzione: $x = 0$, $y = 2$</div>
+                </div>
+            </div>
+            
+            <!-- Esercizio 4 -->
+            <div class="exercise">
+                <div class="exercise-header" onclick="toggleSolution(this)">
+                    <h3>Esercizio 4 - Sistema letterale</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="exercise-question">
+                    <p><strong>Sistema:</strong> $\begin{cases} ax + 2y = 1 \\ x + y = 2 \end{cases}$</p>
+                    <p>Discuti e risolvi al variare del parametro $a$.</p>
+                </div>
+                <div class="exercise-solution">
+                    <div class="step">
+                        <div class="step-title">Metodo: Utilizziamo la sostituzione</div>
+                        <p>Dalla seconda equazione: $x = 2 - y$</p>
+                        <p>Sostituiamo nella prima: $a(2 - y) + 2y = 1$</p>
+                        <p>$2a - ay + 2y = 1$</p>
+                        <p>$y(2 - a) = 1 - 2a$</p>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-title">Discussione:</div>
+                        
+                        <p><strong>Caso 1: $a \neq 2$</strong></p>
+                        <p>Il sistema è determinato:</p>
+                        <p>$y = \frac{1 - 2a}{2 - a} = \frac{-(2a - 1)}{2 - a} = \frac{2a - 1}{a - 2}$</p>
+                        <p>$x = 2 - y = 2 - \frac{2a - 1}{a - 2} = \frac{2(a - 2) - (2a - 1)}{a - 2} = \frac{2a - 4 - 2a + 1}{a - 2} = \frac{-3}{a - 2} = \frac{3}{2 - a}$</p>
+                        
+                        <p><strong>Caso 2: $a = 2$</strong></p>
+                        <p>L'equazione diventa: $0 \cdot y = 1 - 4 = -3$, che è impossibile</p>
+                    </div>
+                    
+                    <div class="final-answer">
+                        <strong>Soluzione:</strong><br>
+                        • Se $a \neq 2$: sistema determinato con $x = \frac{3}{2-a}$ e $y = \frac{2a-1}{a-2}$<br>
+                        • Se $a = 2$: sistema impossibile
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Esercizio 5 -->
+            <div class="exercise">
+                <div class="exercise-header" onclick="toggleSolution(this)">
+                    <h3>Esercizio 5 - Problema dei pesi</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="exercise-question">
+                    <p>Chiara e Barbara confrontano il loro peso:</p>
+                    <ul>
+                        <li>Chiara pesa i $\frac{6}{7}$ di Barbara</li>
+                        <li>Se Barbara diminuisse di 10 kg peserebbe 1 kg in meno di Chiara</li>
+                    </ul>
+                    <p>Quanto pesano le due ragazze?</p>
+                </div>
+                <div class="exercise-solution">
+                    <div class="step">
+                        <div class="step-title">Passo 1: Impostiamo le incognite</div>
+                        <p>Sia $C$ = peso di Chiara (kg)</p>
+                        <p>Sia $B$ = peso di Barbara (kg)</p>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-title">Passo 2: Traduciamo le condizioni in equazioni</div>
+                        <p>Prima condizione: $C = \frac{6}{7}B$</p>
+                        <p>Seconda condizione: $B - 10 = C - 1$</p>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-title">Passo 3: Sostituiamo la prima nella seconda</div>
+                        <p>$B - 10 = \frac{6}{7}B - 1$</p>
+                        <p>$B - \frac{6}{7}B = 10 - 1$</p>
+                        <p>$\frac{7B - 6B}{7} = 9$</p>
+                        <p>$\frac{B}{7} = 9$</p>
+                        <p>$B = 63$ kg</p>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-title">Passo 4: Calcoliamo il peso di Chiara</div>
+                        <p>$C = \frac{6}{7} \cdot 63 = \frac{378}{7} = 54$ kg</p>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-title">Verifica:</div>
+                        <p>Chiara pesa 54 kg, che è $\frac{6}{7}$ di 63 kg ✓</p>
+                        <p>Se Barbara diminuisse di 10 kg peserebbe 53 kg, cioè 1 kg in meno di Chiara (54 kg) ✓</p>
+                    </div>
+                    
+                    <div class="final-answer">
+                        Chiara pesa 54 kg, Barbara pesa 63 kg
+                    </div>
+                </div>
             </div>
         </div>
+        
+        <!-- TABELLA RIASSUNTIVA -->
+        <div id="summary" class="tab-content">
+            <h2>📊 Tabella Riassuntiva delle Soluzioni</h2>
+            
+            <h3 style="margin-top: 30px; color: #667eea;">Fila A (*)</h3>
+            <table class="summary-table">
+                <thead>
+                    <tr>
+                        <th>Esercizio</th>
+                        <th>Testo</th>
+                        <th>Soluzione</th>
+                        <th>Punteggio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>1a</strong></td>
+                        <td>$\begin{cases} 11x + 7y = 5 \\ x + 7y = 5 \end{cases}$</td>
+                        <td>DETERMINATO</td>
+                        <td>0.25</td>
+                    </tr>
+                    <tr>
+                        <td><strong>1b</strong></td>
+                        <td>$\begin{cases} 11x + 7y = 5 \\ 22x + 14y = 5 \end{cases}$</td>
+                        <td>IMPOSSIBILE</td>
+                        <td>0.25</td>
+                    </tr>
+                    <tr>
+                        <td><strong>1c</strong></td>
+                        <td>$\begin{cases} x + 7y = 5 \\ x - 7y = 5 \end{cases}$</td>
+                        <td>DETERMINATO</td>
+                        <td>0.25</td>
+                    </tr>
+                    <tr>
+                        <td><strong>1d</strong></td>
+                        <td>$\begin{cases} 11x + 7y = 5 \\ 11x + 7y = 3 \end{cases}$</td>
+                        <td>IMPOSSIBILE</td>
+                        <td>0.25</td>
+                    </tr>
+                    <tr>
+                        <td><strong>1e</strong></td>
+                        <td>$\begin{cases} 11x + 7y = 5 \\ 22x + 14y - 10 = 0 \end{cases}$</td>
+                        <td>INDETERMINATO</td>
+                        <td>0.25</td>
+                    </tr>
+                    <tr>
+                        <td><strong>1f</strong></td>
+                        <td>$\begin{cases} \frac{11}{2}x + \frac{7}{4}y = 5 \\ 22x + 7y = 5 \end{cases}$</td>
+                        <td>IMPOSSIBILE</td>
+                        <td>0.25</td>
+                    </tr>
+                    <tr>
+                        <td><strong>2a</strong></td>
+                        <td>Cramer: $\begin{cases} 5x - 2y = 12 \\ 3y + \frac{1}{2}x = -2 \end{cases}$</td>
+                        <td>$x = 2$, $y = -1$</td>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <td><strong>2b</strong></td>
+                        <td>Interpretazione grafica (stesso sistema)</td>
+                        <td>Intersezione: $(2, -1)$</td>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <td><strong>3</strong></td>
+                        <td>$\begin{cases} -\frac{1}{3}(y + 1) - \frac{1}{2}x = 3(x - \frac{1}{3}) \\ 3(x + 1) - 2 = 4(x - 2y) + 17 \end{cases}$</td>
+                        <td>$x = 0$, $y = 2$</td>
+                        <td>2</td>
+                    </tr>
+                    <tr>
+                        <td><strong>4</strong></td>
+                        <td>Sistema letterale: $\begin{cases} ax + 2y = 2 \\ x + y = 2 \end{cases}$</td>
+                        <td>Se $a \neq 2$: $x = \frac{2}{2-a}$, $y = \frac{2(a-1)}{a-2}$<br>Se $a = 2$: impossibile</td>
+                        <td>2.5</td>
+                    </tr>
+                    <tr>
+                        <td><strong>5</strong></td>
+                        <td>Problema degli aerei</td>
+                        <td>Primo aereo: 800 km/h<br>Secondo aereo: 920 km/h</td>
+                        <td>2</td>
+                    </tr>
+                    <tr style="background: #667eea; color: white; font-weight: bold;">
+                        <td colspan="3">TOTALE</td>
+                        <td>10</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h3 style="margin-top: 50px; color: #764ba2;">Fila B (**)</h3>
+            <table class="summary-table">
+                <thead>
+                    <tr>
+                        <th>Esercizio</th>
+                        <th>Testo</th>
+                        <th>Soluzione</th>
+                        <th>Punteggio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>1a</strong></td>
+                        <td>$\begin{cases} 10x - 3y = 5 \\ 10x + 3y = -5 \end{cases}$</td>
+                        <td>DETERMINATO</td>
+                        <td>0.25</td>
+                    </tr>
+                    <tr>
+                        <td><strong>1b</strong></td>
+                        <td>$\begin{cases} 10x - 3y = 5 \\ 20x - 6y = 5 \end{cases}$</td>
+                        <td>IMPOSSIBILE</td>
+                        <td>0.25</td>
+                    </tr>
+                    <tr>
+                        <td><strong>1c</strong></td>
+                        <td>$\begin{cases} 2x + 6y = 5 \\ x + 3y = 5 \end{cases}$</td>
+                        <td>IMPOSSIBILE</td>
+                        <td>0.25</td>
+                    </tr>
+                    <tr>
+                        <td><strong>1d</strong></td>
+                        <td>$\begin{cases} 10x - 3y = 5 \\ 20x + 6y = -10 \end{cases}$</td>
+                        <td>DETERMINATO</td>
+                        <td>0.25</td>
+                    </tr>
+                    <tr>
+                        <td><strong>1e</strong></td>
+                        <td>$\begin{cases} 10x - 3y = 5 \\ 20x - 6y - 10 = 0 \end{cases}$</td>
+                        <td>INDETERMINATO</td>
+                        <td>0.25</td>
+                    </tr>
+                    <tr>
+                        <td><strong>1f</strong></td>
+                        <td>$\begin{cases} \frac{1}{2}x + \frac{3}{4}y = 2 \\ 20x + 30y = 80 \end{cases}$</td>
+                        <td>INDETERMINATO</td>
+                        <td>0.25</td>
+                    </tr>
+                    <tr>
+                        <td><strong>2a</strong></td>
+                        <td>Cramer: $\begin{cases} 5x - 2y = 12 \\ 3y + \frac{1}{2}x = -2 \end{cases}$</td>
+                        <td>$x = 2$, $y = -1$</td>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <td><strong>2b</strong></td>
+                        <td>Interpretazione grafica (stesso sistema)</td>
+                        <td>Intersezione: $(2, -1)$</td>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <td><strong>3</strong></td>
+                        <td>$\begin{cases} -\frac{1}{3}(y + 1) - \frac{1}{2}x = 3(x - \frac{1}{3}) \\ 3(x + 1) - 2 = 4(x - 2y) + 17 \end{cases}$</td>
+                        <td>$x = 0$, $y = 2$</td>
+                        <td>2</td>
+                    </tr>
+                    <tr>
+                        <td><strong>4</strong></td>
+                        <td>Sistema letterale: $\begin{cases} ax + 2y = 1 \\ x + y = 2 \end{cases}$</td>
+                        <td>Se $a \neq 2$: $x = \frac{3}{2-a}$, $y = \frac{2a-1}{a-2}$<br>Se $a = 2$: impossibile</td>
+                        <td>2.5</td>
+                    </tr>
+                    <tr>
+                        <td><strong>5</strong></td>
+                        <td>Problema dei pesi (Chiara e Barbara)</td>
+                        <td>Chiara: 54 kg<br>Barbara: 63 kg</td>
+                        <td>2</td>
+                    </tr>
+                    <tr style="background: #764ba2; color: white; font-weight: bold;">
+                        <td colspan="3">TOTALE</td>
+                        <td>10</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
-
-    <div id="riepilogo" class="tab-content">
-        <h2>Tabella Riassuntiva delle Soluzioni</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Esercizio</th>
-                    <th>Soluzione Fila A</th>
-                    <th>Soluzione Fila B</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>1. Natura Sistemi</td>
-                    <td>D, I, D, I, Ind, I</td>
-                    <td>D, I, I, D, Ind, Ind</td>
-                </tr>
-                <tr>
-                    <td>2. Cramer</td>
-                    <td>$(2, -1)$</td>
-                    <td>$(2, -1)$</td>
-                </tr>
-                <tr>
-                    <td>3. Algebrico</td>
-                    <td>$(0, 2)$</td>
-                    <td>$(0, 2)$</td>
-                </tr>
-                <tr>
-                    <td>4. Parametrico</td>
-                    <td>$a=2 \to$ Imp</td>
-                    <td>$a=2 \to$ Imp</td>
-                </tr>
-                <tr>
-                    <td>5. Problema</td>
-                    <td>800, 920 km/h</td>
-                    <td>54, 63 kg</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-</div>
-
-<script>
-    // Funzione per gestire i tab
-    function openTab(tabName) {
-        var i;
-        var contents = document.getElementsByClassName("tab-content");
-        var tabs = document.getElementsByClassName("tab-button");
-        
-        for (i = 0; i < contents.length; i++) {
-            contents[i].style.display = "none";
-            contents[i].classList.remove("active");
-        }
-        for (i = 0; i < tabs.length; i++) {
-            tabs[i].classList.remove("active");
-        }
-        
-        document.getElementById(tabName).style.display = "block";
-        document.getElementById(tabName).classList.add("active");
-        
-        // Evidenzia bottone attivo
-        var buttons = document.querySelectorAll('.tab-button');
-        buttons.forEach(btn => {
-            if(btn.getAttribute('onclick').includes(tabName)) {
-                btn.classList.add('active');
+    
+    <script>
+        // Funzione per cambiare tab
+        function openTab(evt, tabName) {
+            const tabContents = document.getElementsByClassName('tab-content');
+            for (let i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove('active');
             }
-        });
-
-        // Trigger resize per Plotly
-        if(tabName === 'filaA' || tabName === 'filaB') {
-            window.dispatchEvent(new Event('resize'));
+            
+            const tabButtons = document.getElementsByClassName('tab-button');
+            for (let i = 0; i < tabButtons.length; i++) {
+                tabButtons[i].classList.remove('active');
+            }
+            
+            document.getElementById(tabName).classList.add('active');
+            evt.currentTarget.classList.add('active');
+            
+            // Ricrea i grafici quando si apre una tab
+            if (tabName === 'filaA') {
+                setTimeout(createChartFilaA, 100);
+            } else if (tabName === 'filaB') {
+                setTimeout(createChartFilaB, 100);
+            }
         }
-    }
-
-    // Generazione Grafici
-    document.addEventListener("DOMContentLoaded", function() {
         
-        var commonLayout = {
-            xaxis: {title: 'x', range: [-5, 8], zeroline: true},
-            yaxis: {title: 'y', range: [-6, 6], zeroline: true},
-            showlegend: true,
-            margin: { t: 30, b: 40, l: 50, r: 20 },
-            hovermode: 'closest'
-        };
-
-        var trace1 = {
-            x: [-2, 6],
-            y: [-11, 9], // y = 2.5x - 6
-            mode: 'lines',
-            name: '5x - 2y = 12',
-            line: {color: '#2c3e50'}
-        };
+        // Funzione per mostrare/nascondere soluzioni
+        function toggleSolution(header) {
+            const exercise = header.parentElement;
+            const solution = exercise.querySelector('.exercise-solution');
+            const icon = header.querySelector('.toggle-icon');
+            
+            solution.classList.toggle('show');
+            icon.classList.toggle('open');
+        }
         
-        var trace2 = {
-            x: [-10, 10], 
-            y: [1, -2.33], // y = -1/6x - 2/3
-            // ricalcolo punti esatti per traccia: x=-4 -> y=0; x=2 -> y=-1
-            x: [-4, 8],
-            y: [0, -2],
-            mode: 'lines',
-            name: 'x/2 + 3y = -2',
-            line: {color: '#3498db'}
-        };
+        // Funzione per creare il grafico Fila A
+        function createChartFilaA() {
+            const canvas = document.getElementById('chartFilaA');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            
+            // Distruggi il grafico esistente se presente
+            if (window.chartFilaAInstance) {
+                window.chartFilaAInstance.destroy();
+            }
+            
+            // Funzioni delle rette
+            const line1 = x => 2.5 * x - 6;
+            const line2 = x => -x/6 - 2/3;
+            
+            // Genera punti
+            const xValues = [];
+            const y1Values = [];
+            const y2Values = [];
+            
+            for (let x = -2; x <= 6; x += 0.5) {
+                xValues.push(x);
+                y1Values.push(line1(x));
+                y2Values.push(line2(x));
+            }
+            
+            window.chartFilaAInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: xValues,
+                    datasets: [{
+                        label: 'y = 5/2 x - 6',
+                        data: y1Values,
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        borderWidth: 3,
+                        pointRadius: 0,
+                        tension: 0
+                    }, {
+                        label: 'y = -1/6 x - 2/3',
+                        data: y2Values,
+                        borderColor: '#764ba2',
+                        backgroundColor: 'rgba(118, 75, 162, 0.1)',
+                        borderWidth: 3,
+                        pointRadius: 0,
+                        tension: 0
+                    }, {
+                        label: 'Soluzione (2, -1)',
+                        data: [{x: 2, y: -1}],
+                        pointRadius: 8,
+                        pointBackgroundColor: '#ff6b6b',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        showLine: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Rappresentazione grafica del sistema',
+                            font: { size: 16, weight: 'bold' }
+                        },
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        x: {
+                            type: 'linear',
+                            position: 'center',
+                            title: {
+                                display: true,
+                                text: 'x'
+                            },
+                            grid: {
+                                color: '#e0e0e0'
+                            }
+                        },
+                        y: {
+                            type: 'linear',
+                            position: 'center',
+                            title: {
+                                display: true,
+                                text: 'y'
+                            },
+                            grid: {
+                                color: '#e0e0e0'
+                            }
+                        }
+                    }
+                }
+            });
+        }
         
-        var point = {
-            x: [2],
-            y: [-1],
-            mode: 'markers',
-            marker: {size: 10, color: '#e74c3c'},
-            name: 'Intersezione (2, -1)'
-        };
-
-        // Renderizza su entrambi i grafici (dato che l'esercizio è uguale)
-        Plotly.newPlot('graphA', [trace1, trace2, point], commonLayout, {responsive: true, displayModeBar: false});
-        Plotly.newPlot('graphB', [trace1, trace2, point], commonLayout, {responsive: true, displayModeBar: false});
-    });
-</script>
-
+        // Funzione per creare il grafico Fila B (identico)
+        function createChartFilaB() {
+            const canvas = document.getElementById('chartFilaB');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            
+            if (window.chartFilaBInstance) {
+                window.chartFilaBInstance.destroy();
+            }
+            
+            const line1 = x => 2.5 * x - 6;
+            const line2 = x => -x/6 - 2/3;
+            
+            const xValues = [];
+            const y1Values = [];
+            const y2Values = [];
+            
+            for (let x = -2; x <= 6; x += 0.5) {
+                xValues.push(x);
+                y1Values.push(line1(x));
+                y2Values.push(line2(x));
+            }
+            
+            window.chartFilaBInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: xValues,
+                    datasets: [{
+                        label: 'y = 5/2 x - 6',
+                        data: y1Values,
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        borderWidth: 3,
+                        pointRadius: 0,
+                        tension: 0
+                    }, {
+                        label: 'y = -1/6 x - 2/3',
+                        data: y2Values,
+                        borderColor: '#764ba2',
+                        backgroundColor: 'rgba(118, 75, 162, 0.1)',
+                        borderWidth: 3,
+                        pointRadius: 0,
+                        tension: 0
+                    }, {
+                        label: 'Soluzione (2, -1)',
+                        data: [{x: 2, y: -1}],
+                        pointRadius: 8,
+                        pointBackgroundColor: '#ff6b6b',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        showLine: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Rappresentazione grafica del sistema',
+                            font: { size: 16, weight: 'bold' }
+                        },
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        x: {
+                            type: 'linear',
+                            position: 'center',
+                            title: {
+                                display: true,
+                                text: 'x'
+                            },
+                            grid: {
+                                color: '#e0e0e0'
+                            }
+                        },
+                        y: {
+                            type: 'linear',
+                            position: 'center',
+                            title: {
+                                display: true,
+                                text: 'y'
+                            },
+                            grid: {
+                                color: '#e0e0e0'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Inizializza il primo grafico all'avvio
+        window.addEventListener('load', function() {
+            createChartFilaA();
+        });
+    </script>
 </body>
 </html>
